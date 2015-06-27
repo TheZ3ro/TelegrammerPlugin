@@ -1,4 +1,5 @@
 ---
 bot: "YOUR_BOT_USERNAME"
 admin: "YOUR_USERNAME"
+admin_code: "CODE"
 token: "YOUR_TOKEN"
