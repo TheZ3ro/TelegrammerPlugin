@@ -1,0 +1,30 @@
+#!/usr/bin/env ruby
+
+#Dir.chdir(File.split(__FILE__)[0])
+#$LOAD_PATH << './'
+#$LOAD_PATH << '../'
+
+require 'telegrammer'
+require './lib/telegrammer-plugin.rb'
+
+Dir["./plugins/*.rb"].each { |f| require f }
+TelegrammerPlugin.register_plugins
+
+bot = Telegrammer::Bot.new('YOUT_BOT_API_TOKEN')
+
+bot.get_updates do |message|
+  puts "#{message.chat.id} => @#{message.from.username}: #{message.text}"
+  if message.text != nil
+    if message.text[0]=='/'
+      params=message.text.split(' ')
+      cmd=params.slice!(0)
+      cmd=cmd[1..-1]
+      puts "#{message.chat.id} => #{cmd} [#{params.join(',')}]"
+
+      TelegrammerPlugin.plugins.each do |plugin|
+        pl=plugin.new
+        pl.handle_command(cmd,params,bot,message)
+      end
+    end
+  end
+end
