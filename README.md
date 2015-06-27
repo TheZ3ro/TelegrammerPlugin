@@ -37,7 +37,7 @@ bin/telegrammer-plugin
 
 When you are Contributing to the main fork you should consider do some thing:
 * Untrack your config.yml (`git update-index --assume-unchanged config.yml`)
-* **When needed** Re-track config.yml changes (`git update-index --no-assume-unchanged config.yml; git add config.yml`) 
+* **When needed** Re-track config.yml changes (`git update-index --no-assume-unchanged config.yml; git add config.yml`)
 
 
 1. Create your feature branch (`git checkout -b my-new-feature`)
@@ -73,6 +73,8 @@ The folder will be created if not present.
 
 Remember that all the **relative path** are relative to the project folder `telegrammer-plugin`
 
+Please, ***for god sake***, print as little as possibile to the console. Thanks.
+
 
 #### Plugin example:
 ```ruby
@@ -96,5 +98,7 @@ end
 ```
 
 Other Example:
-[TelegrammerPlugin/AdminPlugin](https://github.com/TheZ3ro/TelegrammerPlugin/blob/master/plugins/admin.rb)
-[TelegrammerPlugin/EchoPlugin](https://github.com/TheZ3ro/TelegrammerPlugin/blob/master/plugins/echo.rb)
+
+* [BtcPlugin](https://github.com/TheZ3ro/TelegrammerPlugin/blob/master/plugins/btc.rb) -> for HTTP/S request
+* [AdminPlugin](https://github.com/TheZ3ro/TelegrammerPlugin/blob/master/plugins/admin.rb) -> for sending photo
+* [EchoPlugin](https://github.com/TheZ3ro/TelegrammerPlugin/blob/master/plugins/echo.rb) -> general purpose

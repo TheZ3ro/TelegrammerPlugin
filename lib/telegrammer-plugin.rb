@@ -1,18 +1,26 @@
 class TelegrammerPlugin
-  VERSION = "0.0.3"
+  VERSION = "0.0.4"
 
+  # Set of plugins loaded
   @plugins = Set.new
 
   def self.plugins
     @plugins
   end
 
+  #This method will load and register the plugins that derive from TelegrammerPlugin
   def self.register_plugins
     Object.constants.each do |klass|
       if klass != :Config
         const = Object.const_get(klass)
+        #If the plugin derive from TelegrammerPlugin
         if const.respond_to?(:superclass) and const.superclass == TelegrammerPlugin
-          @plugins << const
+          #If it has :help and :handle_command methods
+          if const.methods.include?(:help) && const.methods.include?(:handle_command)
+            @plugins << const
+          else
+            p "#{const} is not implemented correctly"
+          end
         end
       end
     end

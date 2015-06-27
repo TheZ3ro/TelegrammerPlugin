@@ -8,18 +8,26 @@ require 'yaml'
 require 'telegrammer'
 require './lib/telegrammer-plugin.rb'
 
+#Load ruby files from plugin and require them
 Dir["./plugins/*.rb"].each { |f| require f }
+#Register the loaded plugins
 TelegrammerPlugin.register_plugins
+#The config file
 config = YAML.load_file('./config.yml')
 bot = Telegrammer::Bot.new(config["token"])
+#Create the tmp directory if there isn't
 if !File.directory?("tmp")
   Dir.mkdir("tmp", 0766)
 end
 
+#Every time the bot get a new message
 bot.get_updates do |message|
   puts "#{message.chat.id} => @#{message.from.username}: #{message.text}"
+  #maybe it's a photo, we don't care
   if message.text != nil
+    #it's a command?
     if message.text[0]=='/'
+      #some magic
       params=message.text.split(' ')
       cmd=params.slice!(0)
       cmd=cmd[1..-1]
@@ -28,9 +36,14 @@ bot.get_updates do |message|
         to=cmd.split('@')[1]
         cmd=cmd.split('@')[0]
       end
-      puts "#{message.chat.id} => #{cmd} @#{to} [#{params.join(',')}]"
+      # cmd -> the command
+      # to -> the command recipient
+      # params -> the command params
+      ## puts "#{message.chat.id} => #{cmd} @#{to} [#{params.join(',')}]"
 
+      #if the message is for us
       if to == config["bot"]
+        #some reserved command
         case cmd
         when "help"
           m=""
@@ -43,6 +56,7 @@ bot.get_updates do |message|
           m="Telegrammer version: #{Telegrammer::VERSION}\nTelegrammerPlugin version: #{TelegrammerPlugin::VERSION}"
           bot.send_message(chat_id: message.chat.id, text: "#{m}")
         when "admin"
+          #last param is always admin_code
           code = params.pop()
           if code == config["admin_code"] && message.from.username == config["admin"]
             AdminPlugin.handle_command(cmd,params,bot,message)
@@ -50,6 +64,7 @@ bot.get_updates do |message|
             bot.send_message(chat_id: message.chat.id, text: "You are not allowed to run admin command!")
           end
         else
+          # give the command to slaves
           TelegrammerPlugin.plugins.each do |plugin|
             plugin.handle_command(cmd,params,bot,message)
           end

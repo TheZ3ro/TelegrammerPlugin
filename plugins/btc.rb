@@ -9,7 +9,6 @@ class BtcPlugin < TelegrammerPlugin
 
   def self.btc(currency)
     currency.upcase!
-    p currency
     if currency == "USD"
       path="2/btc_usd/ticker"
     elsif currency == "EUR"
