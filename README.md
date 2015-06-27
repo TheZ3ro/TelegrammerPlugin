@@ -21,6 +21,7 @@ Learn more about this [here](https://core.telegram.org/bots))
 ---
 bot: "YOUR_BOT_USERNAME"
 admin: "YOUR_USERNAME"
+admin_code: "0000"
 token: "YOUR_TOKEN"
 ```
 
@@ -52,6 +53,13 @@ Help methods **must** return a [String]
 **Some commands are reserved**, so they are not available to plugins:
 * help
 * version
+* admin
+
+If your plugin have to download file, consider download them in the `tmp/` folder,
+and delete it after it has been sent.
+The folder will be created if not present.
+
+Remember that all the **relative path** are relative to the project folder `telegrammer-plugin`
 
 
 #### Plugin example:
@@ -74,3 +82,7 @@ class PingPlugin < TelegrammerPlugin
   end
 end
 ```
+
+Other Example:
+[TelegrammerPlugin/AdminPlugin](https://github.com/TheZ3ro/TelegrammerPlugin/blob/master/plugins/admin.rb)
+[TelegrammerPlugin/EchoPlugin](https://github.com/TheZ3ro/TelegrammerPlugin/blob/master/plugins/echo.rb)

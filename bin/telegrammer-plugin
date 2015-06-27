@@ -12,6 +12,9 @@ Dir["./plugins/*.rb"].each { |f| require f }
 TelegrammerPlugin.register_plugins
 config = YAML.load_file('./config.yml')
 bot = Telegrammer::Bot.new(config["token"])
+if !File.directory?("tmp")
+  Dir.mkdir("tmp", 0766)
+end
 
 bot.get_updates do |message|
   puts "#{message.chat.id} => @#{message.from.username}: #{message.text}"
@@ -20,22 +23,36 @@ bot.get_updates do |message|
       params=message.text.split(' ')
       cmd=params.slice!(0)
       cmd=cmd[1..-1]
-      puts "#{message.chat.id} => #{cmd} [#{params.join(',')}]"
+      to=config["bot"]
+      if cmd.include? ('@')
+        to=cmd.split('@')[1]
+        cmd=cmd.split('@')[0]
+      end
+      puts "#{message.chat.id} => #{cmd} @#{to} [#{params.join(',')}]"
 
-      case cmd
-      when "help"
-        m=""
-        TelegrammerPlugin.plugins.each do |plugin|
-          m+=plugin.help+"\n"
-        end
-        m+='"/version": Print the Bot version'+"\n"
-        bot.send_message(chat_id: message.chat.id, text: "#{m}")
-      when "version"
-        m="Telegrammer version: #{Telegrammer::VERSION}\nTelegrammerPlugin version: #{TelegrammerPlugin::VERSION}"
-        bot.send_message(chat_id: message.chat.id, text: "#{m}")
-      else
-        TelegrammerPlugin.plugins.each do |plugin|
-          plugin.handle_command(cmd,params,bot,message)
+      if to == config["bot"]
+        case cmd
+        when "help"
+          m=""
+          TelegrammerPlugin.plugins.each do |plugin|
+            m+=plugin.help+"\n"
+          end
+          m+='"/version": Print the Bot version'+"\n"
+          bot.send_message(chat_id: message.chat.id, text: "#{m}")
+        when "version"
+          m="Telegrammer version: #{Telegrammer::VERSION}\nTelegrammerPlugin version: #{TelegrammerPlugin::VERSION}"
+          bot.send_message(chat_id: message.chat.id, text: "#{m}")
+        when "admin"
+          code = params.pop()
+          if code == config["admin_code"] && message.from.username == config["admin"]
+            AdminPlugin.handle_command(cmd,params,bot,message)
+          else
+            bot.send_message(chat_id: message.chat.id, text: "You are not allowed to run admin command!")
+          end
+        else
+          TelegrammerPlugin.plugins.each do |plugin|
+            plugin.handle_command(cmd,params,bot,message)
+          end
         end
       end
     end
