@@ -4,13 +4,14 @@
 #$LOAD_PATH << './'
 #$LOAD_PATH << '../'
 
+require 'yaml'
 require 'telegrammer'
 require './lib/telegrammer-plugin.rb'
 
 Dir["./plugins/*.rb"].each { |f| require f }
 TelegrammerPlugin.register_plugins
-
-bot = Telegrammer::Bot.new('YOUT_BOT_API_TOKEN')
+config = YAML.load_file('./config.yml')
+bot = Telegrammer::Bot.new(config["token"])
 
 bot.get_updates do |message|
   puts "#{message.chat.id} => @#{message.from.username}: #{message.text}"
@@ -21,9 +22,21 @@ bot.get_updates do |message|
       cmd=cmd[1..-1]
       puts "#{message.chat.id} => #{cmd} [#{params.join(',')}]"
 
-      TelegrammerPlugin.plugins.each do |plugin|
-        pl=plugin.new
-        pl.handle_command(cmd,params,bot,message)
+      case cmd
+      when "help"
+        m=""
+        TelegrammerPlugin.plugins.each do |plugin|
+          m+=plugin.help+"\n"
+        end
+        m+='"/version": Print the Bot version'+"\n"
+        bot.send_message(chat_id: message.chat.id, text: "#{m}")
+      when "version"
+        m="Telegrammer version: #{Telegrammer::VERSION}\nTelegrammerPlugin version: #{TelegrammerPlugin::VERSION}"
+        bot.send_message(chat_id: message.chat.id, text: "#{m}")
+      else
+        TelegrammerPlugin.plugins.each do |plugin|
+          plugin.handle_command(cmd,params,bot,message)
+        end
       end
     end
   end

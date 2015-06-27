@@ -1,7 +1,10 @@
 class EchoPlugin < TelegrammerPlugin
 
-  def handle_command(cmd,params,bot,message)
-    p "#{message.text} #{cmd}"
+  def self.help
+    '"/echo <text...>": Repeat the text'
+  end
+
+  def self.handle_command(cmd,params,bot,message)
     if(cmd=="echo")
       p "Command received #{cmd}"
       m="#{params.join(' ')}"

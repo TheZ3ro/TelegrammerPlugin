@@ -13,13 +13,15 @@ cd TelegrammerPlugin
 ```
 
 ## Configuration
-Open the `bin/telegrammer-plugin` file and insert your Bot API token in line 13
+Open the `config.yml` file and insert your Bot API token in line 4
 
 (For the Token, talk with the [@BotFather](https://telegram.me/botfather).
 Learn more about this [here](https://core.telegram.org/bots))
-
-```
-nano bin/telegrammer-plugin
+```yaml
+---
+bot: "YOUR_BOT_USERNAME"
+admin: "YOUR_USERNAME"
+token: "YOUR_TOKEN"
 ```
 
 ## Usage
@@ -44,22 +46,31 @@ The variable type are:
 * bot => [Telegrammer::Bot] : the Bot (see [telegrammer/bot.rb](https://github.com/mayoral/telegrammer/blob/master/lib/telegrammer/bot.rb) for methods)
 * message => [Telegrammer::DataTypes::Message] : the Message Object (see [telegrammer/data_types/message.rb](https://github.com/mayoral/telegrammer/blob/master/lib/telegrammer/data_types/message.rb) for methods)
 
-an example:
+When the **help** command is called, the bot take the help methods for every plugin and send as response.
+Help methods **must** return a [String]
+
+**Some commands are reserved**, so they are not available to plugins:
+* help
+* version
+
+
+#### Plugin example:
 ```ruby
 # derive from TelegrammerPlugin
-class VersionPlugin < TelegrammerPlugin
+class PingPlugin < TelegrammerPlugin
+  # the help method for help command
+  def self.help
+    '"/ping": Check if the bot is online'
+  end
   # the handle_command that the bot will call
   def self.handle_command(cmd,params,bot,message)
     # check for the right command
-    if(cmd=="version")
+    if(cmd=="ping")
       # print in stdin
       p "Command received #{cmd}"
-      m="Telegrammer version: #{Telegrammer::VERSION}\nTelegrammerPlugin version: #{TelegrammerPlugin::VERSION}"
       # send message with the bot
-      bot.send_message(chat_id: message.chat.id, text: "#{m}")
+      bot.send_message(chat_id: message.chat.id, text: "pong")
     end
   end
-
 end
-
 ```
