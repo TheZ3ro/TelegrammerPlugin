@@ -33,6 +33,18 @@ chmod +x bin/telegrammer-plugin
 bin/telegrammer-plugin
 ```
 
+## Contributing
+
+When you are Contributing to the main fork you should consider do some thing:
+* Untrack your config.yml (`git update-index --assume-unchanged config.yml`)
+* **When needed** Re-track config.yml changes (`git update-index --no-assume-unchanged config.yml; git add config.yml`) 
+
+
+1. Create your feature branch (`git checkout -b my-new-feature`)
+2. Commit your changes (`git commit -am 'Add some feature'`)
+3. Push to the branch (`git push origin my-new-feature`)
+4. Create a new Pull Request
+
 ## Creating new Plugins
 The bot load automatically every plugin in the `./plugins` folder.
 
