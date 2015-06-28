@@ -7,11 +7,21 @@
 require 'yaml'
 require 'telegrammer'
 require './lib/telegrammer-plugin.rb'
+begin
+	require 'colorize'
+rescue Exception => e
+	require './lib/telegrammer-plugin/color.rb'
+	puts "Alert:".brown+" colorize gem don't found, fallback to telegrammer-plugin/color"
+end
 
-#Load ruby files from plugin and require them
-Dir["./plugins/*.rb"].each { |f| require f }
-#Register the loaded plugins
-TelegrammerPlugin.register_plugins
+def load_plugin
+  #Load ruby files from plugin and require them
+  Dir["./plugins/*.rb"].each { |f| require f }
+  #Register the loaded plugins
+  TelegrammerPlugin.register_plugins
+end
+
+load_plugin
 #The config file
 config = YAML.load_file('./config.yml')
 bot = Telegrammer::Bot.new(config["token"])
@@ -20,9 +30,15 @@ if !File.directory?("tmp")
   Dir.mkdir("tmp", 0766)
 end
 
+Signal.trap("INT") do
+    puts "\rShutting down...".red
+    exit
+end
+
 #Every time the bot get a new message
 bot.get_updates do |message|
-  puts "#{message.chat.id} => @#{message.from.username}: #{message.text}"
+  load_plugin
+  puts "#{message.chat.id}".green+" => @#{message.from.username}: #{message.text}"
   #maybe it's a photo, we don't care
   if message.text != nil
     #it's a command?
@@ -32,43 +48,61 @@ bot.get_updates do |message|
       cmd=params.slice!(0)
       cmd=cmd[1..-1]
       to=config["bot"]
+      from=message.from.username
       if cmd.include? ('@')
         to=cmd.split('@')[1]
         cmd=cmd.split('@')[0]
       end
       # cmd -> the command
       # to -> the command recipient
+      # from -> the command sender
       # params -> the command params
       ## puts "#{message.chat.id} => #{cmd} @#{to} [#{params.join(',')}]"
 
-      #if the message is for us
-      if to == config["bot"]
-        #some reserved command
-        case cmd
-        when "help"
-          m=""
-          TelegrammerPlugin.plugins.each do |plugin|
-            m+=plugin.help+"\n"
-          end
-          m+='"/version": Print the Bot version'+"\n"
-          bot.send_message(chat_id: message.chat.id, text: "#{m}")
-        when "version"
-          m="Telegrammer version: #{Telegrammer::VERSION}\nTelegrammerPlugin version: #{TelegrammerPlugin::VERSION}"
-          bot.send_message(chat_id: message.chat.id, text: "#{m}")
-        when "admin"
-          #last param is always admin_code
-          code = params.pop()
-          if code == config["admin_code"] && message.from.username == config["admin"]
-            AdminPlugin.handle_command(cmd,params,bot,message)
+      #if the sender is not banned and the message is for us
+      if !AdminPlugin.is_banned? from && from == config["admin"]
+        if to == config["bot"]
+          #some reserved command
+          case cmd
+          when "help"
+            m=""
+            TelegrammerPlugin.plugins.each do |plugin|
+              if params[0]=="BotFather"
+                b=plugin.help.split(':')
+                # Strip first 2 char and last
+                # Split command and params and select only the command
+                b[0]=b[0][2..-2].split(' ')[0]
+                m+=b.join(' -')+"\n"
+              else
+                m+=plugin.help+"\n"
+              end
+            end
+            if params[0]=="BotFather"
+              m+="version - Print the Bot version\n"
+            else
+              m+='"/version": Print the Bot version'+"\n"
+            end
+            bot.send_message(chat_id: message.chat.id, text: "#{m}")
+          when "version"
+            m="Telegrammer version: #{Telegrammer::VERSION}\nTelegrammerPlugin version: #{TelegrammerPlugin::VERSION}"
+            bot.send_message(chat_id: message.chat.id, text: "#{m}")
+          when "admin"
+            #last param is always admin_code
+            code = params.pop()
+            if code == config["admin_code"] && from == config["admin"]
+              AdminPlugin.handle_command(cmd,params,bot,message)
+            else
+              bot.send_message(chat_id: message.chat.id, text: "You are not allowed to run admin command!")
+            end
           else
-            bot.send_message(chat_id: message.chat.id, text: "You are not allowed to run admin command!")
-          end
-        else
-          # give the command to slaves
-          TelegrammerPlugin.plugins.each do |plugin|
-            plugin.handle_command(cmd,params,bot,message)
+            # give the command to slaves
+            TelegrammerPlugin.plugins.each do |plugin|
+              plugin.handle_command(cmd,params,bot,message)
+            end
           end
         end
+      else
+        puts "Alert:".brown+" banned user #{from} send a message \"#{message.text}\""
       end
     end
   end

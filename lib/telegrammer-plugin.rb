@@ -1,5 +1,6 @@
 class TelegrammerPlugin
   VERSION = "0.0.4"
+  TMP = File.join(Dir.pwd,"tmp")
 
   # Set of plugins loaded
   @plugins = Set.new
@@ -19,7 +20,7 @@ class TelegrammerPlugin
           if const.methods.include?(:help) && const.methods.include?(:handle_command)
             @plugins << const
           else
-            p "#{const} is not implemented correctly"
+            puts "Alert:".brown+" #{const} is not implemented correctly"
           end
         end
       end
