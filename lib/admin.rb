@@ -7,8 +7,6 @@ class AdminPlugin < TelegrammerPlugin
   def self.admin_help
     help+"\n\nPossibile admin command:
     help -> this help
-    screen -> try to make a screenshot on the bot system
-    cam -> try to make a webcam shot
     info -> info on the bot system
     ban [username] -> bot can't reply to username
     unban [username] -> bot can reply to username"
@@ -36,32 +34,15 @@ class AdminPlugin < TelegrammerPlugin
     ban.include? u
   end
 
+  def self.is_admin?(u)
+    config = YAML.load_file('./config.yml')
+    u == config["admin"]
+  end
+
   def self.handle_command(cmd,params,bot,message)
     if(cmd=="admin")
       p "Command received #{cmd}"
       case params[0]
-      when "screen"
-        path = File.join(TelegrammerPlugin::TMP,"scrot.jpg")
-        tmp=%x[scrot -z #{path}]
-        if File.exist?(path)
-          File.open(path){ |f|
-            bot.send_photo(chat_id: message.chat.id, photo: f)
-          }
-          File.delete(path)
-        else
-          puts "Error:".red+" File not exist #{path}"
-        end
-      when "cam"
-        path = File.join(TelegrammerPlugin::TMP,"web-cam-shot.jpg")
-        tmp=%x[fswebcam -r 640x480 --jpeg 85 -D 1 #{path}]
-        if File.exist?(path)
-          File.open(path){ |f|
-            bot.send_photo(chat_id: message.chat.id, photo: f)
-          }
-          File.delete(path)
-        else
-          puts "Error:".red+" File not exist #{path}"
-        end
       when "info"
         uptime=%x[uptime | awk '{print $3" "$4}']
         uptime=uptime[0..-3]
@@ -101,4 +82,5 @@ class AdminPlugin < TelegrammerPlugin
     end
   end
 
+  private_class_method :array_to_json, :json_to_array
 end

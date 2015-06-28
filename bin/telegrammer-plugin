@@ -2,7 +2,6 @@
 
 #Dir.chdir(File.split(__FILE__)[0])
 #$LOAD_PATH << './'
-#$LOAD_PATH << '../'
 
 require 'yaml'
 require 'telegrammer'
@@ -65,27 +64,9 @@ bot.get_updates do |message|
           #some reserved command
           case cmd
           when "help"
-            m=""
-            TelegrammerPlugin.plugins.each do |plugin|
-              if params[0]=="BotFather"
-                b=plugin.help.split(':')
-                # Strip first 2 char and last
-                # Split command and params and select only the command
-                b[0]=b[0][2..-2].split(' ')[0]
-                m+=b.join(' -')+"\n"
-              else
-                m+=plugin.help+"\n"
-              end
-            end
-            if params[0]=="BotFather"
-              m+="version - Print the Bot version\n"
-            else
-              m+='"/version": Print the Bot version'+"\n"
-            end
-            bot.send_message(chat_id: message.chat.id, text: "#{m}")
+						HelpPlugin.handle_command(cmd,params,bot,message)
           when "version"
-            m="Telegrammer version: #{Telegrammer::VERSION}\nTelegrammerPlugin version: #{TelegrammerPlugin::VERSION}"
-            bot.send_message(chat_id: message.chat.id, text: "#{m}")
+						VersionPlugin.handle_command(cmd,params,bot,message)
           when "admin"
             #last param is always admin_code
             code = params.pop()

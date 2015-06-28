@@ -1,5 +1,5 @@
 class TelegrammerPlugin
-  VERSION = "0.0.4"
+  VERSION = "0.0.5"
   TMP = File.join(Dir.pwd,"tmp")
 
   # Set of plugins loaded
@@ -11,6 +11,9 @@ class TelegrammerPlugin
 
   #This method will load and register the plugins that derive from TelegrammerPlugin
   def self.register_plugins
+    require './lib/admin.rb'
+    require './lib/help.rb'
+    require './lib/version.rb'
     Object.constants.each do |klass|
       if klass != :Config
         const = Object.const_get(klass)
