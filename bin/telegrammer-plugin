@@ -35,56 +35,60 @@ Signal.trap("INT") do
 end
 
 #Every time the bot get a new message
-bot.get_updates do |message|
-  load_plugin
-  puts "#{message.chat.id}".green+" => @#{message.from.username}: #{message.text}"
-  #maybe it's a photo, we don't care
-  if message.text != nil
-    #it's a command?
-    if message.text[0]=='/'
-      #some magic
-      params=message.text.split(' ')
-      cmd=params.slice!(0)
-      cmd=cmd[1..-1]
-      to=config["bot"]
-      from=message.from.username
-      if cmd.include? ('@')
-        to=cmd.split('@')[1]
-        cmd=cmd.split('@')[0]
-      end
-      # cmd -> the command
-      # to -> the command recipient
-      # from -> the command sender
-      # params -> the command params
-      ## puts "#{message.chat.id} => #{cmd} @#{to} [#{params.join(',')}]"
+begin
+	bot.get_updates do |message|
+	  load_plugin
+	  puts "#{message.chat.id}".green+" => @#{message.from.username}: #{message.text}"
+	  #maybe it's a photo, we don't care
+	  if message.text != nil
+	    #it's a command?
+	    if message.text[0]=='/'
+	      #some magic
+	      params=message.text.split(' ')
+	      cmd=params.slice!(0)
+	      cmd=cmd[1..-1]
+	      to=config["bot"]
+	      from=message.from.username
+	      if cmd.include? ('@')
+	        to=cmd.split('@')[1]
+	        cmd=cmd.split('@')[0]
+	      end
+	      # cmd -> the command
+	      # to -> the command recipient
+	      # from -> the command sender
+	      # params -> the command params
+	      ## puts "#{message.chat.id} => #{cmd} @#{to} [#{params.join(',')}]"
 
-      #if the sender is not banned and the message is for us
-      if !AdminPlugin.is_banned? from && from == config["admin"]
-        if to == config["bot"]
-          #some reserved command
-          case cmd
-          when "help"
-						HelpPlugin.handle_command(cmd,params,bot,message)
-          when "version"
-						VersionPlugin.handle_command(cmd,params,bot,message)
-          when "admin"
-            #last param is always admin_code
-            code = params.pop()
-            if code == config["admin_code"] && from == config["admin"]
-              AdminPlugin.handle_command(cmd,params,bot,message)
-            else
-              bot.send_message(chat_id: message.chat.id, text: "You are not allowed to run admin command!")
-            end
-          else
-            # give the command to slaves
-            TelegrammerPlugin.plugins.each do |plugin|
-              plugin.handle_command(cmd,params,bot,message)
-            end
-          end
-        end
-      else
-        puts "Alert:".brown+" banned user #{from} send a message \"#{message.text}\""
-      end
-    end
-  end
+	      #if the sender is not banned and the message is for us
+	      if !AdminPlugin.is_banned? from && from == config["admin"]
+	        if to == config["bot"]
+	          #some reserved command
+	          case cmd
+	          when "help"
+							HelpPlugin.handle_command(cmd,params,bot,message)
+	          when "version"
+							VersionPlugin.handle_command(cmd,params,bot,message)
+	          when "admin"
+	            #last param is always admin_code
+	            code = params.pop()
+	            if code == config["admin_code"] && from == config["admin"]
+	              AdminPlugin.handle_command(cmd,params,bot,message)
+	            else
+	              bot.send_message(chat_id: message.chat.id, text: "You are not allowed to run admin command!")
+	            end
+	          else
+	            # give the command to slaves
+	            TelegrammerPlugin.plugins.each do |plugin|
+	              plugin.handle_command(cmd,params,bot,message)
+	            end
+	          end
+	        end
+	      else
+	        puts "Alert:".brown+" banned user #{from} send a message \"#{message.text}\""
+	      end
+	    end
+	  end
+	end
+rescue Telegrammer::Errors::ServiceUnavailableError=>e
+   puts "Error: #{e}"
 end
