@@ -6,10 +6,20 @@ Under HEAVY Development
 Pull Requests always appreciated
 
 ## Installation
+#### Installing ruby
+Read this guide on [Ruby-lang.org](https://www.ruby-lang.org/en/documentation/installation/)
+
 ##### With git
 ```
 git clone https://github.com/thez3ro/TelegrammerPlugin
 cd TelegrammerPlugin
+```
+
+##### Without git
+```
+wget -O TelegrammerPlugin.tar.gz https://github.com/TheZ3ro/TelegrammerPlugin/archive/v0.1-beta.0.tar.gz
+tar xzf TelegrammerPlugin.tar.gz
+cd TelegrammerPlugin-0.1-beta.0
 ```
 
 ## Configuration
