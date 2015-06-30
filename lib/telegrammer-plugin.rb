@@ -1,5 +1,5 @@
 class TelegrammerPlugin
-  VERSION = "0.0.5"
+  VERSION = "0.1.0"
   TMP = File.join(Dir.pwd,"tmp")
 
   # Set of plugins loaded
