@@ -5,4 +5,4 @@ source "http://rubygems.org"
 
 # Add dependencies to develop your gem here.
 # Include everything needed to run rake, tests, features, etc.
-gem "telegrammer", ">= 0.1.0"
+gem "telegrammer", ">= 0.3"

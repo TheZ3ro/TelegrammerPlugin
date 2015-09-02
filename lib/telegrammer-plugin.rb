@@ -29,4 +29,12 @@ class TelegrammerPlugin
       end
     end
   end
+
+  def self.pchat(chat_id,text,from)
+    if(from.empty?)
+      puts "#{chat_id}".green+" => @me: #{text}"
+    else
+      puts "#{chat_id}".green+" => @#{from}: #{text}"
+    end
+  end
 end

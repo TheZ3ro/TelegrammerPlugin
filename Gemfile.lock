@@ -10,18 +10,14 @@ GEM
     descendants_tracker (0.0.4)
       thread_safe (~> 0.3, >= 0.3.1)
     equalizer (0.0.11)
-    ethon (0.7.4)
-      ffi (>= 1.3.0)
-    ffi (1.9.9)
+    httpclient (2.6.0.1)
     ice_nine (0.11.1)
-    multi_json (1.11.1)
-    telegrammer (>= 0.1.0)
+    multi_json (1.11.2)
+    telegrammer (0.3.1)
+      httpclient (~> 2.6)
       multi_json (~> 1.11)
-      typhoeus (~> 0.7)
       virtus (~> 1.0)
     thread_safe (0.3.5)
-    typhoeus (0.7.2)
-      ethon (>= 0.7.4)
     virtus (1.0.5)
       axiom-types (~> 0.1)
       coercible (~> 1.0)
@@ -32,4 +28,4 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  telegrammer
+  telegrammer (>= 0.3)

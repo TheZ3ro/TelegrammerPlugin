@@ -24,6 +24,7 @@ class HelpPlugin < TelegrammerPlugin
         end
       end
       bot.send_message(chat_id: message.chat.id, text: "#{m}")
+      TelegrammerPlugin.pchat(message.chat.id,m,"")
     end
   end
 

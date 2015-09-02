@@ -20,7 +20,7 @@ class TelegrammerRepl
             chat_id=param[0].to_i
             param.slice!(0)
             bot.send_message(chat_id: chat_id, text: param.join(" "))
-            puts "#{chat_id}".green+" => @me: #{param.join(" ")}"
+            TelegrammerPlugin.pchat(chat_id,param.join(" "),"")
           else
             puts "Error:".red+" Second parameter must be a chat_id"
           end
@@ -39,7 +39,7 @@ class TelegrammerRepl
             if File.exist?(path)
               File.open(path,'rb'){ |f|
                 bot.send_photo(chat_id: chat_id, photo: f)
-                puts "#{chat_id}".blue+" => @me: *photo*"
+                TelegrammerPlugin.pchat(chat_id,"*photo*","")
               }
               File.delete(path)
             else
@@ -52,6 +52,9 @@ class TelegrammerRepl
           puts "Error:".red+" Not enought parameter (/sendp [chat_id] [image_url])"
         end
       when "/end"
+        puts "Shutting down...".red
+        Kernel.exit!
+      when "/exit"
         puts "Shutting down...".red
         Kernel.exit!
       else

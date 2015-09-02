@@ -52,7 +52,7 @@ end
 begin
 	bot.get_updates do |message|
 	  load_plugin
-	  puts "#{message.chat.id}".green+" => @#{message.from.username}: #{message.text}"
+		TelegrammerPlugin.pchat(message.chat.id,message.text,message.from.username)
 		TelegrammerRepl.conversation<<message.chat.id
 	  #maybe it's a photo, we don't care
 	  if message.text != nil
@@ -90,6 +90,7 @@ begin
 	              AdminPlugin.handle_command(cmd,params,bot,message)
 	            else
 	              bot.send_message(chat_id: message.chat.id, text: "You are not allowed to run admin command!")
+								TelegrammerPlugin.pchat(message.chat.id,"You are not allowed to run admin command!","")
 	            end
 	          else
 	            # give the command to slaves

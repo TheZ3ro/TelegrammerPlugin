@@ -13,6 +13,7 @@ class ScreenPlugin < TelegrammerPlugin
         if File.exist?(path)
           File.open(path){ |f|
             bot.send_photo(chat_id: message.chat.id, photo: f)
+            TelegrammerPlugin.pchat(message.chat.id,"*photo*","")
           }
           File.delete(path)
         else
@@ -20,6 +21,7 @@ class ScreenPlugin < TelegrammerPlugin
         end
       else
         bot.send_message(chat_id: message.chat.id, text: "Only an admin can execute this command")
+        TelegrammerPlugin.pchat(message.chat.id,"Only an admin can execute this command","")
       end
     end
   end
