@@ -1,5 +1,5 @@
 class TelegrammerPlugin
-  VERSION = "0.1.0"
+  VERSION = "0.1.2"
   TMP = File.join(Dir.pwd,"tmp")
 
   # Set of plugins loaded
@@ -14,6 +14,7 @@ class TelegrammerPlugin
     require './lib/admin.rb'
     require './lib/help.rb'
     require './lib/version.rb'
+    require './lib/info.rb'
     Object.constants.each do |klass|
       if klass != :Config
         const = Object.const_get(klass)
@@ -31,10 +32,14 @@ class TelegrammerPlugin
   end
 
   def self.pchat(chat_id,text,from)
-    if(from.empty?)
+    if(from=="")
       puts "#{chat_id}".green+" => @me: #{text}"
     else
-      puts "#{chat_id}".green+" => @#{from}: #{text}"
+      if from.username.nil? then
+        puts "#{chat_id}".green+" => \"#{from.first_name}\": #{text}"
+      else
+        puts "#{chat_id}".green+" => @#{from.username}: #{text}"
+      end
     end
   end
 end

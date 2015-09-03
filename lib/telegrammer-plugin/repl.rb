@@ -13,7 +13,7 @@ class TelegrammerRepl
       cmd = param.slice!(0)
       case cmd
       when "/list"
-        @conversation.join(" | ")
+        puts @conversation.to_a.join(" | ".red)
       when "/send"
         if param.length>=2
           if param[0].is_num?

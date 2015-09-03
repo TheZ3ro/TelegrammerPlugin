@@ -11,7 +11,7 @@ begin
 	require 'colorize'
 rescue Exception => e
 	require './lib/telegrammer-plugin/color.rb'
-	puts "Alert:".brown+" colorize gem don't found, fallback to telegrammer-plugin/color"
+	puts "Alert:".brown+" colorize gem not found, fallback to telegrammer-plugin/color"
 end
 
 def load_plugin
@@ -52,7 +52,7 @@ end
 begin
 	bot.get_updates do |message|
 	  load_plugin
-		TelegrammerPlugin.pchat(message.chat.id,message.text,message.from.username)
+		TelegrammerPlugin.pchat(message.chat.id,message.text,message.from)
 		TelegrammerRepl.conversation<<message.chat.id
 	  #maybe it's a photo, we don't care
 	  if message.text != nil
@@ -63,7 +63,14 @@ begin
 	      cmd=params.slice!(0)
 	      cmd=cmd[1..-1]
 	      to=config["bot"]
-	      from=message.from.username
+				puts message.from.username
+				if message.from.username.nil? || message.from.username.empty? then
+					from=""
+					bot.send_message(chat_id: message.chat.id, text: "You must register a username to use this bot!")
+					TelegrammerPlugin.pchat(message.chat.id,"You must register a username to use this bot!","")
+				else
+					from=message.from.username
+				end
 	      if cmd.include? ('@')
 	        to=cmd.split('@')[1]
 	        cmd=cmd.split('@')[0]
@@ -75,14 +82,16 @@ begin
 	      ## puts "#{message.chat.id} => #{cmd} @#{to} [#{params.join(',')}]"
 
 	      #if the sender is not banned and the message is for us
-	      if !AdminPlugin.is_banned? from && from == config["admin"]
-	        if to == config["bot"]
+	      if !AdminPlugin.is_banned? from
+	        if to == config["bot"] && from != ""
 	          #some reserved command
 	          case cmd
 	          when "help"
 							HelpPlugin.handle_command(cmd,params,bot,message)
 	          when "version"
 							VersionPlugin.handle_command(cmd,params,bot,message)
+						when "info"
+							InfoPlugin.handle_command(cmd,params,bot,message)
 	          when "admin"
 	            #last param is always admin_code
 	            code = params.pop()
