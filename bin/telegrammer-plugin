@@ -30,6 +30,8 @@ if !File.directory?("tmp")
   Dir.mkdir("tmp", 0766)
 end
 
+TIMEOUT_EXCEPTION = [Telegrammer::Errors::ServiceUnavailableError,Telegrammer::Errors::TimeoutError]
+
 # is_num? function
 class Object
   def is_num?
@@ -50,7 +52,7 @@ end
 
 #Every time the bot get a new message
 begin
-	bot.get_updates do |message|
+	bot.get_updates(fail_silently: true) do |message|
 	  load_plugin
 		TelegrammerPlugin.pchat(message.chat.id,message.text,message.from)
 		TelegrammerRepl.conversation<<message.chat.id
@@ -63,7 +65,6 @@ begin
 	      cmd=params.slice!(0)
 	      cmd=cmd[1..-1]
 	      to=config["bot"]
-				puts message.from.username
 				if message.from.username.nil? || message.from.username.empty? then
 					from=""
 					bot.send_message(chat_id: message.chat.id, text: "You must register a username to use this bot!")
@@ -114,6 +115,7 @@ begin
 	    end
 	  end
 	end
-rescue Telegrammer::Errors::ServiceUnavailableError=>e
-   puts "Error: #{e}"
+rescue *TIMEOUT_EXCEPTION=>e
+	puts "Error: #{e}"
+	retry
 end

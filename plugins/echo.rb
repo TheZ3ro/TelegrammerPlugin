@@ -10,10 +10,10 @@ class EchoPlugin < TelegrammerPlugin
       m="#{params.join(' ')}"
       if(!m.nil? && !m.empty?)
         bot.send_message(chat_id: message.chat.id, text: "#{m}")
-        TelegrammerPlugin.pchat(chat_id,m,"")
+        TelegrammerPlugin.pchat(message.chat.id,m,"")
       else
         bot.send_message(chat_id: message.chat.id, text: "Error: \n"+self.help)
-        TelegrammerPlugin.pchat(chat_id,"Error: \n"+self.help,"")
+        TelegrammerPlugin.pchat(message.chat.id,"Error: \n"+self.help,"")
       end
     end
   end
