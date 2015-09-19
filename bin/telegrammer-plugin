@@ -30,7 +30,12 @@ if !File.directory?("tmp")
   Dir.mkdir("tmp", 0766)
 end
 
-TIMEOUT_EXCEPTION = [Telegrammer::Errors::ServiceUnavailableError,Telegrammer::Errors::TimeoutError,Telegrammer::Errors::BadRequestError]
+TIMEOUT_EXCEPTION = [
+	Telegrammer::Errors::ServiceUnavailableError,
+	Telegrammer::Errors::TimeoutError,
+	Telegrammer::Errors::BadRequestError,
+	SocketError
+]
 
 # is_num? function
 class Object
