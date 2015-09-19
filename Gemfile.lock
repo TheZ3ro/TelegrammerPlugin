@@ -1,0 +1,34 @@
+GEM
+  remote: http://rubygems.org/
+  specs:
+    axiom-types (0.1.1)
+      descendants_tracker (~> 0.0.4)
+      ice_nine (~> 0.11.0)
+      thread_safe (~> 0.3, >= 0.3.1)
+    coercible (1.0.0)
+      descendants_tracker (~> 0.0.1)
+    descendants_tracker (0.0.4)
+      thread_safe (~> 0.3, >= 0.3.1)
+    equalizer (0.0.11)
+    httpclient (2.6.0.1)
+    ice_nine (0.11.1)
+    multi_json (1.11.2)
+    telegrammer (0.5.0)
+      httpclient (~> 2.6)
+      multi_json (~> 1.11)
+      virtus (~> 1.0)
+    thread_safe (0.3.5)
+    virtus (1.0.5)
+      axiom-types (~> 0.1)
+      coercible (~> 1.0)
+      descendants_tracker (~> 0.0, >= 0.0.3)
+      equalizer (~> 0.0, >= 0.0.9)
+
+PLATFORMS
+  ruby
+
+DEPENDENCIES
+  telegrammer (>= 0.5.0)
+
+BUNDLED WITH
+   1.10.6
