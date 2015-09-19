@@ -6,21 +6,7 @@ Under HEAVY Development
 Pull Requests always appreciated
 
 ## Installation
-#### Installing ruby
-Read this guide on [Ruby-lang.org](https://www.ruby-lang.org/en/documentation/installation/)
-
-##### With git
-```
-git clone https://github.com/thez3ro/TelegrammerPlugin
-cd TelegrammerPlugin
-```
-
-##### Without git
-```
-wget -O TelegrammerPlugin.tar.gz https://github.com/TheZ3ro/TelegrammerPlugin/archive/v0.1-beta.0.tar.gz
-tar xzf TelegrammerPlugin.tar.gz
-cd TelegrammerPlugin-0.1-beta.0
-```
+Read the wiki page about [Installation](https://github.com/TheZ3ro/TelegrammerPlugin/wiki/Installation)
 
 ## Configuration
 Open the `config.yml` file and insert your Bot API token in line 4
@@ -45,9 +31,11 @@ bin/telegrammer-plugin
 
 ## Contributing
 
-See the wiki page about [Contributing](https://github.com/TheZ3ro/TelegrammerPlugin/wiki/Contribute)
+Read the wiki page about [Contributing](https://github.com/TheZ3ro/TelegrammerPlugin/wiki/Contribute)
 
 
 ## Creating new Plugins
 
-See the wiki page [Creating new Plugin](https://github.com/TheZ3ro/TelegrammerPlugin/wiki/Creating-new-Plugin)
+Read the wiki page [Creating new Plugin](https://github.com/TheZ3ro/TelegrammerPlugin/wiki/Creating-new-Plugin)
+
+[Plugin list](https://github.com/TheZ3ro/TelegrammerPlugin/wiki/Plugin-list)
