@@ -7,7 +7,7 @@ class VersionPlugin < TelegrammerPlugin
   def self.handle_command(cmd,params,bot,message)
     if cmd=="version"
       p "Command received #{cmd}"
-      m="Telegrammer version: #{Telegrammer::VERSION}\nTelegrammerPlugin version: #{TelegrammerPlugin::VERSION}"
+      m="Telegrammer version: #{Telegrammer::VERSION}\nTelegrammerPlugin version: #{TelegrammerPlugin::VERSION}\nSource code: https://github.com/thez3ro/TelegrammerPlugin"
       bot.send_message(chat_id: message.chat.id, text: "#{m}")
       TelegrammerPlugin.pchat(message.chat.id,m,"")
     end
