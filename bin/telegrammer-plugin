@@ -123,5 +123,6 @@ begin
 	end
 rescue *TIMEOUT_EXCEPTION=>e
 	puts "Error:".red+" #{e}"
+	sleep 5
 	retry
 end

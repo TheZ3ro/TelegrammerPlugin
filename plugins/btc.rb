@@ -38,6 +38,14 @@ class BtcPlugin < TelegrammerPlugin
         else
           m="1 BTC = #{val} #{params[0]}"
         end
+      elsif params.length == 2
+        val=btc(params[0])
+        if val == nil
+          m="Error Btc-e API"
+        else
+          val=val.to_f*params[1].to_f
+          m="#{params[1]} BTC = #{val} #{params[0]}"
+        end
       else
         m="Wrong parameter\n"+help
       end
